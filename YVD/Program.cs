@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using YoutubeExplode;
 
 namespace YVD;
 
@@ -6,28 +7,15 @@ internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        var helloWorldCommand = new RootCommand(
-            description: "Hello world command build using System.CommandLine");
+        var rootCommand = new RootCommand(
+            description: "YouTube video downloader");
 
-        var nameOption = new Option<string>(
-            name: "--name",
-            description: "Name of the user.");
-        helloWorldCommand.AddOption(nameOption);
+        var client = new YoutubeClient();
+        var downloader = new VideoDownloader(client);
+        var videoDownloadCommand = new VideoDownloadCommand(downloader);
 
-        var cityOption = new Option<string>(
-            name: "--city",
-            description: "City of the user.");
-        helloWorldCommand.AddOption(cityOption);
+        rootCommand.AddCommand(videoDownloadCommand.Value);
 
-        helloWorldCommand.SetHandler(
-            (Action<string, string>)HelloWorldHandler,
-            nameOption,
-            cityOption);
-
-        return await helloWorldCommand.InvokeAsync(args);
+        return await rootCommand.InvokeAsync(args);
     }
-
-    private static void HelloWorldHandler(
-        string name,
-        string city) => Console.WriteLine($"Hello {name} from {city}");
 }
