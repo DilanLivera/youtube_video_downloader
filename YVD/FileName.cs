@@ -5,7 +5,9 @@ namespace YVD;
 internal sealed class FileName
 {
     private static readonly string _invalidCharsPattern =
-        "[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]";
+        "[" +
+        Regex.Escape(new string(Path.GetInvalidFileNameChars())) +
+        "]";
 
     private readonly string _title;
 
@@ -21,6 +23,8 @@ internal sealed class FileName
         _title = title;
     }
 
-    public string Value =>
-        Regex.Replace(input: _title, _invalidCharsPattern, replacement: "");
+    public string Value => Regex.Replace(
+        input: _title,
+        _invalidCharsPattern,
+        replacement: "");
 }
