@@ -6,9 +6,8 @@ internal sealed class VideoDownloadCommand
 {
     private readonly VideoDownloader _downloader;
 
-    private readonly Option<string> _downloadFolderPathOption = new(
-        name: "--folder",
-        description: "The path for the download folder.");
+    private readonly Option<string> _downloadFolderPathOption = new DownloadFolderPathOption()
+        .Value;
 
     private readonly Option<string> _videoIdOption = new(
         name: "--id",
@@ -38,11 +37,11 @@ internal sealed class VideoDownloadCommand
 
     private void Handle(
         string videoId,
-        string folderPath)
+        string downloadFolderPath)
     {
         try
         {
-            _downloader.DownloadVideoAsync(videoId, folderPath)
+            _downloader.DownloadVideoAsync(videoId, downloadFolderPath)
                 .GetAwaiter()
                 .GetResult();
         }

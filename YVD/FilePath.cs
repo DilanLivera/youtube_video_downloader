@@ -22,28 +22,10 @@ internal sealed class FilePath
 
         _extension = extension;
 
-        _fileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+        _fileName = fileName;
     }
 
-    public string Value => CreateFilePath();
-
-    private string CreateFilePath()
-    {
-        var fileNameWithExtension = $"{_fileName.Value}.{_extension}";
-
-        if (Path.Exists(_downloadFolderPath))
-        {
-            return Path.Combine(
-                _downloadFolderPath,
-                fileNameWithExtension);
-        }
-
-        var userProfilePath = Environment.GetFolderPath(
-            Environment.SpecialFolder.UserProfile);
-
-        return Path.Combine(
-            userProfilePath,
-            @"Downloads\youtube_videos",
-            fileNameWithExtension);
-    }
+    public string Value => Path.Combine(
+        _downloadFolderPath,
+        $"{_fileName.Value}.{_extension}");
 }
