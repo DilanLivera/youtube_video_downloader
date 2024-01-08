@@ -4,8 +4,6 @@ namespace YVD;
 
 internal sealed class VideoDownloadCommand
 {
-    private readonly VideoDownloader _downloader;
-
     private readonly Option<string> _downloadFolderPathOption = new DownloadFolderPathOption()
         .Value;
 
@@ -13,10 +11,8 @@ internal sealed class VideoDownloadCommand
         .Value;
 
     public VideoDownloadCommand(
-        VideoDownloader downloader)
+        VideoDownloadCommandHandler handler)
     {
-        _downloader = downloader;
-
         var command = new Command(
             name: "download",
             description: "Download the video using the video id.")
@@ -25,7 +21,17 @@ internal sealed class VideoDownloadCommand
         };
 
         command.SetHandler(
-            handle: Handle,
+            handle: async (videoId, downloadFolderPath) =>
+            {
+                try
+                {
+                    await handler.HandleAsync(videoId, downloadFolderPath);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+            },
             _videoIdOption,
             _downloadFolderPathOption);
 
@@ -33,20 +39,4 @@ internal sealed class VideoDownloadCommand
     }
 
     public Command Value { get; }
-
-    private void Handle(
-        string videoId,
-        string downloadFolderPath)
-    {
-        try
-        {
-            _downloader.DownloadVideoAsync(videoId, downloadFolderPath)
-                .GetAwaiter()
-                .GetResult();
-        }
-        catch (Exception exception)
-        {
-            Console.WriteLine(exception);
-        }
-    }
 }

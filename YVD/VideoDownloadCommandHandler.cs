@@ -3,14 +3,14 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YVD;
 
-internal sealed class VideoDownloader
+internal sealed class VideoDownloadCommandHandler
 {
     private readonly YoutubeClient _youtube;
 
-    public VideoDownloader(
+    public VideoDownloadCommandHandler(
         YoutubeClient youtube) => _youtube = youtube;
 
-    internal async Task DownloadVideoAsync(
+    internal async Task HandleAsync(
         string videoId,
         string downloadFolderPath)
     {

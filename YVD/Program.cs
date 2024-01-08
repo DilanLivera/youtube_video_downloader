@@ -11,8 +11,8 @@ internal static class Program
             description: "YouTube video downloader");
 
         var client = new YoutubeClient();
-        var downloader = new VideoDownloader(client);
-        var videoDownloadCommand = new VideoDownloadCommand(downloader);
+        var handler = new VideoDownloadCommandHandler(client);
+        var videoDownloadCommand = new VideoDownloadCommand(handler);
 
         rootCommand.AddCommand(videoDownloadCommand.Value);
 
