@@ -9,9 +9,8 @@ internal sealed class VideoDownloadCommand
     private readonly Option<string> _downloadFolderPathOption = new DownloadFolderPathOption()
         .Value;
 
-    private readonly Option<string> _videoIdOption = new(
-        name: "--id",
-        description: "Id of the video.");
+    private readonly Option<string> _videoIdOption = new VideoIdOption()
+        .Value;
 
     public VideoDownloadCommand(
         VideoDownloader downloader)
