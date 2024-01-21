@@ -8,6 +8,20 @@
     <RootNamespace>YVD</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <Version>1.0.0</Version>
+    <!--
+      When the ToolCommandName isn't provided, the command name for the tool is the assembly name
+     -->
+    <ToolCommandName>youtubedownload</ToolCommandName>
+    <!--
+      PackageOutputPath determines where the NuGet package will be produced.
+      The NuGet package is what the .NET CLI uses to install your tool.
+     -->
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1"/>
     <PackageReference Include="YoutubeExplode" Version="6.3.11"/>
