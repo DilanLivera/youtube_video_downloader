@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using Spectre.Console;
 
 namespace YVD;
 
@@ -29,7 +30,12 @@ internal sealed class VideoDownloadCommand
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine(exception);
+                    AnsiConsole.WriteException(
+                        exception,
+                        format: ExceptionFormats.ShortenPaths |
+                                ExceptionFormats.ShortenTypes |
+                                ExceptionFormats.ShortenMethods |
+                                ExceptionFormats.ShowLinks);
                 }
             },
             _videoIdOption,
