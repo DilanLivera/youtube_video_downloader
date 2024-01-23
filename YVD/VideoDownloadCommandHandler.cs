@@ -17,34 +17,43 @@ internal sealed class VideoDownloadCommandHandler
     {
         var videoUrl = $"https://youtube.com/watch?v={videoId}";
 
-        AnsiConsole.MarkupLine("[yellow]Getting the stream manifest[/]");
-        var streamManifest = await _youtube.Videos
-            .Streams
-            .GetManifestAsync(videoUrl);
+        await AnsiConsole.Status()
+            .AutoRefresh(true)
+            .Spinner(Spinner.Known.Star)
+            .SpinnerStyle(Style.Parse("green bold"))
+            .StartAsync(
+                status: $"Downloading the video {videoId}...",
+                async ctx =>
+                {
+                    ctx.Status("[yellow]Getting the stream manifest[/]");
+                    var streamManifest = await _youtube.Videos
+                        .Streams
+                        .GetManifestAsync(videoUrl);
 
-        AnsiConsole.MarkupLine("[yellow]Getting the video stream info[/]");
-        var streamInfo = streamManifest
-            .GetMuxedStreams()
-            .Where(s => s.Container == Container.Mp4)
-            .GetWithHighestVideoQuality();
+                    ctx.Status("[yellow]Getting the video stream info[/]");
+                    var streamInfo = streamManifest
+                        .GetMuxedStreams()
+                        .Where(s => s.Container == Container.Mp4)
+                        .GetWithHighestVideoQuality();
 
-        AnsiConsole.MarkupLine("[yellow]Getting the video details[/]");
-        var video = await _youtube.Videos
-            .GetAsync(videoUrl);
-        var fileName = new FileName(video.Title);
-        var filePath = new FilePath(
-            downloadFolderPath,
-            extension: streamInfo.Container.ToString(),
-            fileName);
+                    ctx.Status("[yellow]Getting the video details[/]");
+                    var video = await _youtube.Videos
+                        .GetAsync(videoUrl);
+                    var fileName = new FileName(video.Title);
+                    var filePath = new FilePath(
+                        downloadFolderPath,
+                        extension: streamInfo.Container.ToString(),
+                        fileName);
 
-        AnsiConsole.MarkupLine("[yellow]Downloading the video[/]");
-        await _youtube.Videos
-            .Streams
-            .DownloadAsync(
-                streamInfo,
-                filePath.Value);
+                    ctx.Status("[yellow]Downloading the video[/]");
+                    await _youtube.Videos
+                        .Streams
+                        .DownloadAsync(
+                            streamInfo,
+                            filePath.Value);
 
-        AnsiConsole.MarkupLine(
-            $"[green]Downloading completed successfully. File path: {filePath.Value}[/]");
+                    ctx.Status("[green]Downloading completed successfully.[/]");
+                    AnsiConsole.MarkupLine($"[green]Please find the file @ {filePath.Value}[/]");
+                });
     }
 }
